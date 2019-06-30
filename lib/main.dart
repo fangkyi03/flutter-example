@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import './utli.dart';
 
 void main() => runApp(MyApp());
 
@@ -67,22 +68,39 @@ class _MyHomePageState extends State<MyHomePage> {
         return new Image.network("http://via.placeholder.com/350x150",fit: BoxFit.fill,);
       },
       itemCount: 3,
-      pagination: new SwiperPagination(),
-      control: new SwiperControl(),
     )
     );
   }
 
   renderText () {
-    return new Text('1231');
+    return new Text('1231',style:new TextStyle(decoration: TextDecoration.none) ,);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: Column(children: <Widget>[
-        this.renderSwiper(),
-    ],),);
+    return CustomScrollView(
+      scrollDirection: Axis.vertical,
+      slivers: <Widget>[
+        new SliverPadding(padding:const EdgeInsets.all(29.0),sliver: new SliverList(delegate:new SliverChildListDelegate(<Widget>[
+          this.renderSwiper(),
+          this.renderText(),
+          this.renderText(),
+          this.renderIconGroup()
+        ])),)
+      ]);
+  }
+
+  renderIconGroup() {
+    final Util list = new Util(List(100)).fill('1230');
+	final listData = List(100).map((e){
+		debugPrint('${e}');
+	});
+	print(listData);
+	// final listData = list.map((e,i){
+	// 	debugPrint('1313${e}:${i}');
+	// 	return Text('123');
+	// });
+	// final listData = list.map((e,i)=> Text(('测试:${e}').toString(),style: TextStyle(decoration: TextDecoration.none),));
+    return Column(children:[]);
   }
 }

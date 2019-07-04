@@ -46,61 +46,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  renderSwiper () {
-    return Container(
-      color: Colors.blue,
-      height: 150,
-      child: new Swiper(
-      itemBuilder: (BuildContext context,int index){
-        return new Image.network("http://via.placeholder.com/350x150",fit: BoxFit.fill,);
-      },
-      itemCount: 3,
-    )
-    );
-  }
-
-  renderText () {
-    return new Text('1231',style:new TextStyle(decoration: TextDecoration.none) ,);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      scrollDirection: Axis.vertical,
-      slivers: <Widget>[
-        new SliverPadding(padding:const EdgeInsets.all(29.0),sliver: new SliverList(delegate:new SliverChildListDelegate(<Widget>[
-          this.renderSwiper(),
-          this.renderText(),
-          this.renderText(),
+    return CustomScrollView(scrollDirection: Axis.vertical, slivers: <Widget>[
+      new SliverPadding(
+        padding: const EdgeInsets.all(29.0),
+        sliver: new SliverList(
+            delegate: new SliverChildListDelegate(<Widget>[
           this.renderIconGroup()
-        ])),)
-      ]);
+        ])),
+      )
+    ]);
   }
 
   renderIconGroup() {
     final Util list = new Util(List(100)).fill('1230');
-	final listData = List(100).map((e){
-		debugPrint('${e}');
-	});
-	print(listData);
-	// final listData = list.map((e,i){
-	// 	debugPrint('1313${e}:${i}');
-	// 	return Text('123');
-	// });
-	// final listData = list.map((e,i)=> Text(('测试:${e}').toString(),style: TextStyle(decoration: TextDecoration.none),));
-    return Column(children:[]);
+    return Column(children:list.map((e,index)=> Text((e * 10).toString())).toList());
   }
 }

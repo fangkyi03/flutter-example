@@ -1,4 +1,4 @@
-# ztesa_farm_app_flutter
+# flutter-example
 
 A new Flutter project.
 

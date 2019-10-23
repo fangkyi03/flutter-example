@@ -1,67 +1,250 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
-import './utli.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rlstyles/main.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(Home());
+}
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class Home extends StatefulWidget {
+  Home({Key key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  renderMain (Widget child) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Scaffold(
+        body: child
+      )
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  renderSwiper () {
+    return ImageView(
+      url: Image.asset('assets/images/banner1.png'),
+    );
+  }
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  Widget renderIcon (int index, List<Map<String,dynamic>> data) {
+    final item = data[index];
+    return View(
+      styles: styles['icon'],
+      children: <Widget>[
+        ImageView(
+          url: Image.asset('assets/images/icon${index + 1}.png',fit: BoxFit.fill,width: 42,height: 42,),
+        ),
+        TextView(item['name'],styles: Styles(color: '#666666',fontSize: 26,marginTop: 20))
+      ],
+    );
+  }
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  renderIconGroup () {
+    List<Map<String,dynamic>> data = [
+      {
+        'name':'生产管理'
+      },
+      {
+        'name':'采销管理'
+      },
+      {
+        'name':'打印二维码'
+      },
+      {
+        'name':'快速检测'
+      },
+      {
+        'name':'小程序店铺'
+      },
+      {
+        'name':'农业保险'
+      },
+      {
+        'name':'农资商城'
+      },
+      {
+        'name':'农担贷款'
+      }
+    ];
+    return View(
+      styles: styles['iconGroup'],
+      children: data.asMap().keys.map((e)=>renderIcon(e,data)).toList()
+    );
+  }
 
-  final String title;
+  renderCardHeader (String title,String subTitle,bool isShowMore) {
+    return TextView(
+      title,
+      styles: Styles(
+        fontSize: 34,
+        color: '#333333',
+        fontWeight: 'bold',
+      ),
+    );
+  }
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+  renderCard ({String title,String subTitle,bool isShowMore,Widget child}) {
+    return View(
+      styles: styles['card'],
+      children: <Widget>[
+        renderCardHeader(title,subTitle,isShowMore),
+        child
+      ]
+    );
+  }
 
-class _MyHomePageState extends State<MyHomePage> {
+  Widget renderFloorGroup (List<String> data) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return View(
+          styles: Styles(width: '100%',height: 85,flexDirection: 'row', marginTop: 14,justifyContent: 'space-between'),
+          children: data.map((e){
+            return ImageView(
+              url: Image.asset(e,width: constraints.maxWidth / data.length - (data.length > 1 ? 10 : 0) ,fit: BoxFit.fill),
+            );
+          }).toList()
+        );
+      }
+    );
+  }
+
+  renderFloor () {
+    Map<String,dynamic> data = {
+      'type':'1*2',
+      'data':[
+          'assets/images/foot1.png',
+          'assets/images/foot2.png',
+          'assets/images/foot3.png'
+      ]
+    };
+    final splitArr = (data['type'] as String).split('*');
+    return renderCard(
+      title: '为你推荐',
+      child: View(
+        styles: Styles(flexDirection: 'column',width: '100%'),
+        children: splitArr.map((e){
+          List listSelect = (data['data'] as List).sublist(0,int.parse(e));
+          (data['data'] as List).removeRange(0,int.parse(e));
+          return renderFloorGroup(listSelect);
+        }).toList()
+      )
+    );
+  }
+
+  renderMall () {
+    Iterable<Map<String,dynamic>> data = List(3).map((e){
+      return   {
+        'name':'汉印热敏标 签打印机',
+        'subTitle':'一机多用 热卖爆款'
+      };
+    });
+    return renderCard(
+      title: '直营商城',
+      child: View(
+        styles: Styles(flexDirection: 'row',justifyContent: 'space-between',marginTop: 20),
+        children: data.map((f){
+          return View(
+            styles:styles['mallItem'],
+            children: <Widget>[
+              ImageView(
+                url: Image.asset('assets/images/foot2.png'),
+                styles: Styles(width: 138,height: 102),
+              ),
+              TextView(f['name'],styles: Styles(fontWeight: 'bold',fontSize: 28,color: '#4B4B4B')),
+              TextView(f['subTitle'],styles: Styles(fontSize: 26,color: '#999999')),
+              TextView('立即购买>',styles: Styles(color: '#FDA00F',fontSize: 28))
+            ],
+          );
+        }).toList()
+      )
+    );
+  }
+
+  rendeerView () {
+    return View(
+      styles: styles['body'],
+      children: <Widget>[
+        renderIconGroup(),
+        renderFloor(),
+        renderMall(),
+      ],
+    );
+  }
+
+  rendeerBody () {
+    return View(
+      styles: Styles(overflow: 'scroll'),
+      children: <Widget>[
+        View(
+          styles: styles['main'],
+          children: <Widget>[
+            renderSwiper(),
+            rendeerView(),
+          ]
+        )
+      ]
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(scrollDirection: Axis.vertical, slivers: <Widget>[
-      new SliverPadding(
-        padding: const EdgeInsets.all(29.0),
-        sliver: new SliverList(
-            delegate: new SliverChildListDelegate(<Widget>[
-          this.renderIconGroup()
-        ])),
-      )
-    ]);
-  }
-
-  renderIconGroup() {
-    final Util list = new Util(List(100)).fill('1230');
-    return Column(children:list.map((e,index)=> Text((e * 10).toString())).toList());
+    ScreenUtil.instance = ScreenUtil(width: 750,height: 1330);
+    return renderMain(rendeerBody());
   }
 }
+
+const Map<String,Styles> styles = {
+  'main':Styles(
+    // width: double.infinity,
+    // height: double.infinity,
+    backgroundColor: 'white',
+    position: 'rel'
+  ),
+  'body':Styles(
+    flexDirection: 'column',
+    paddingLeft: 30,
+    paddingRight: 30,
+    marginTop: 400
+    // flex: 1,
+    // display: 'flex',
+  ),
+  'iconGroup':Styles(
+    width: '100%',
+    backgroundColor: 'white',
+    elevation: 1,
+    borderRadius: 20,
+    flexWrap: 'wrap',
+    paddingLeft: 25,
+    paddingTop: 20,
+    paddingRight: 30,
+    paddingBottom: 20
+  ),
+  'icon':Styles(
+    width: '25%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: 20
+  ),
+  'card':Styles(
+    flexDirection: 'column',
+    marginTop: 50,
+    width: '100%',
+  ),
+  'mallItem':Styles(
+    width: 200,
+    height: 372,
+    flexDirection: 'column',
+    justifyContent: 'space-arround',
+    elevation: 1,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 20,
+    paddingBottom: 20
+  )
+};
